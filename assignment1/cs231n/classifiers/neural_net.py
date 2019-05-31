@@ -80,7 +80,9 @@ class TwoLayerNet(object):
         #############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
-        pass
+        H1 = np.maximum(0, np.dot(X, W1)+b1)
+        scores = np.dot(H1, W2)+b2
+       
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
@@ -97,8 +99,13 @@ class TwoLayerNet(object):
         # classifier loss.                                                          #
         #############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
-
-        pass
+        
+        l2 = reg*(np.sum(W1**2) + np.sum(W2**2))
+        scores = scores - scores.max()
+        scores = np.exp(scores)
+        scores_sums = np.sum(scores, axis=1)
+        loss_i = -np.log(scores[range(N),y]/scores_sums)
+        loss = np.sum(loss_i)/N + l2
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
@@ -110,8 +117,56 @@ class TwoLayerNet(object):
         # grads['W1'] should store the gradient on W1, and be a matrix of same size #
         #############################################################################
         # *****START OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
+        
+#         truefalse = np.equal(np.argmax(scores, axis=1), y)
+#         truefalse[0]=True
+#         a = scores[range(N), np.argmax(scores, axis=1)]
+#         a[truefalse] = a[truefalse]*(1-a[truefalse])
+#         b = scores[range(N),y]
+#         a[~truefalse] = -a[~truefalse]*b[~truefalse]
+#         print(scores[~truefalse,:])
+        
+        print(X)
+        num_train=N
+        cors = scores[range(num_train), y]
+        s = np.divide(scores, scores_sums.reshape(num_train, 1))
+        print(s)
+        s[range(num_train), y] = - (scores_sums - cors) / scores_sums
+        s /= num_train
+        print(s)
+        dW2 = H1.T.dot(s)
+#         grads['W2'] = dW2
+#         dH1=H1
+#         dH1[H1 > 0] = 1
+#         dW1 = np.dot(X.T, dH1)
+#         grads['W1'] = dW1
+        
+        
+#         s = np.divide(scores, scores_sums.reshape(N, 1))
+#         print(- (scores_sums - scores[range(N),y]) / scores_sums)
+#         print(s)
+#         s[range(N),y] = - (scores_sums - scores[range(N),y]) / scores_sums
+#         print(s)
+#         s /= N
+#         dW2 = H1.T.dot(s)
+#         # db2 = np.ones((1, num_train)).dot(s)
+#         db2 = np.sum(s, axis=0)
+#         hidden = s.dot(W2.T)
+#         print("brrrreeeeeeaaaaakkkkk")
+#         print(hidden)
+#         print(H1)
+#         hidden[H1 == 0] = 0
+#         print(hidden)
+        
+#         dW1 = X.T.dot(hidden)
+#         # db1 = np.ones((1, num_train)).dot(hidden)
+#         db1 = np.sum(hidden, axis=0)
+#         grads['W2'] = dW2 + 2 * reg * W2
+#         grads['b2'] = db2
+#         grads['W1'] = dW1 + 2 * reg * W1
+#         grads['b1'] = db1
 
-        pass
+        
 
         # *****END OF YOUR CODE (DO NOT DELETE/MODIFY THIS LINE)*****
 
